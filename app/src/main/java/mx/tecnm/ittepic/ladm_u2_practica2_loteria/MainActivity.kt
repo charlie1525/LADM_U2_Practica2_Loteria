@@ -1,5 +1,6 @@
 package mx.tecnm.ittepic.ladm_u2_practica2_loteria
 
+import android.content.Context
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,7 +14,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var cartas: Carta
     lateinit var media: MediaPlayer
     lateinit var main: MainActivity
-    var indice =0
+    var indice = 0
+    lateinit var contexto:Context
 
     var vectorSonidoCartas = arrayOf(R.raw.gallo,R.raw.diablo,R.raw.dama,R.raw.catrin,R.raw.paraguas,R.raw.sirena,R.raw.escalera,R.raw.botella
         ,R.raw.barril,R.raw.arbol,R.raw.melon,R.raw.valiente,R.raw.gorrito,R.raw.muerte,R.raw.pera,R.raw.bandera,R.raw.bandolon,R.raw.violoncello,R.raw.garza,R.raw.pajaro
@@ -44,8 +46,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnCartasRstantes.visibility = View.INVISIBLE
         main = MainActivity()
-        cartas = Carta(this,vectorNombreCartas,vectorCartas)
+        cartas = Carta(this,vectorNombreCartas,vectorCartas,vectorSonidoCartas)
+        indice = cartas.indiceLocal
         binding.imgCartas.setImageResource(R.drawable.esperanding)
+        contexto = applicationContext
         //Sección de los botones
 
         binding.btnBarajear.setOnClickListener {
@@ -55,11 +59,12 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnInicar.setOnClickListener {
             cartas.start()
-            when(cartas.indice){
+            when(cartas.indiceLocal){
                 54 -> {
                     cartas.terminarHilo()
                     Toast.makeText(this,"Se acabaron las cartas, vuelve a iniciar el juego",Toast.LENGTH_LONG).show()
                     binding.imgCartas.setImageResource(R.drawable.esperanding)
+                    binding.txtVTituloCartas.text ="Esperanding....."
                 }
             }// fin del when del indice
         } // fin del primer boton, el de inicio
@@ -71,5 +76,6 @@ class MainActivity : AppCompatActivity() {
         }
 
     }// fin del OnCreate
+
 
 }// fin de la clase Main
