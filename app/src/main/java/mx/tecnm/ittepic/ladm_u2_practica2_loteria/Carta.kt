@@ -1,10 +1,11 @@
 package mx.tecnm.ittepic.ladm_u2_practica2_loteria
 
 import android.media.MediaPlayer
+import android.provider.MediaStore
 
 class Carta(actMain: MainActivity):Thread() {// fin de la clase
     var pausado = false; var localMain = actMain
-    var ejecucion = true; var media= MediaPlayer()
+    var ejecucion = true; var indice =0
 
     var vectorCartas = arrayOf(R.drawable.gallo1,R.drawable.diablo2,R.drawable.dama3,R.drawable.catrin4,
         R.drawable.paraguas5,R.drawable.sirena6,R.drawable.escalera7,R.drawable.botella8,R.drawable.barril9,R.drawable.arbol10,R.drawable.melon11,R.drawable.valiente12,
@@ -20,16 +21,19 @@ class Carta(actMain: MainActivity):Thread() {// fin de la clase
         ,"La sandía","El tambor","El camaron","Las jaras","El músico","La araña","El soldado","La estrella","El cazo","El mundo","El apache","El nopal","El alacran","La rosaa","La clavera","La campana"
         ,"El cantarito","El venado","El sol","La corona","La Chalupa","El pino","El pescado","La palma","La maceta","El arpa","La rana")
 
-    var vectorSonidoCartas = arrayOf("")
-
     override fun run() {
         super.run()
+
         while(ejecucion){
             if(!pausado){
                 //All the code que ejecutara, aquí
                 localMain.runOnUiThread{
-
+                    localMain.binding.imgCartas.setImageResource(vectorCartas[indice++])
                 }// modificación de lo visual dentro del MainThread
+                when (indice){
+                    vectorCartas.size -> {indice=0}
+                } ; indice++
+                sleep(9000)
 
             }// fin del iff
         }// fin del while
