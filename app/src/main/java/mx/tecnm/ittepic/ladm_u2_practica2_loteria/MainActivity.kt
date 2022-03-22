@@ -4,15 +4,18 @@ import android.content.Context
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
 import kotlinx.coroutines.*
 import mx.tecnm.ittepic.ladm_u2_practica2_loteria.databinding.ActivityMainBinding
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     lateinit var cartas: Carta
-    lateinit var media: MediaPlayer
+    var media: MediaPlayer = MediaPlayer()
+    var media2: MediaPlayer = MediaPlayer()
     lateinit var main: MainActivity
 
     var vectorSonidoCartas = arrayOf(
@@ -198,42 +201,23 @@ class MainActivity : AppCompatActivity() {
         //Sección de los botones
 
         binding.btnBarajear.setOnClickListener {
-            vectorCartas.shuffle()
+            vectorCartas.shuffle(Random(Random.nextInt()))
             Toast.makeText(this, "Mazo barajeado!!", Toast.LENGTH_SHORT).show()
         }
 
         binding.btnInicar.setOnClickListener {
             cartas.start()
-            when (cartas.indiceLocal) {
-                54 -> {
-                    cartas.terminarHilo()
-                    Toast.makeText(
-                        this,
-                        "Se acabaron las cartas, vuelve a iniciar el juego",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    binding.imgCartas.setImageResource(R.drawable.esperanding)
-                    binding.txtVTituloCartas.text = "Esperanding....."
-                }
-            }// fin del when del indice
+            binding.imgCartas.setImageResource(R.drawable.esperanding)
+            binding.txtVTituloCartas.text = "Esperanding....."
         } // fin del primer boton, el de inicio
 
         binding.btnBuenas.setOnClickListener {
-            media = MediaPlayer.create(this, R.raw.victorysound)
-            media.start()
+            if (media.isPlaying){media.stop()}
+            media2 = MediaPlayer.create(this, R.raw.victorysound)
+            media2.start()
             binding.btnCartasRstantes.visibility = View.VISIBLE
         }
 
     }// fin del OnCreate
 
-    fun RepoAudios(indice: Int) = GlobalScope.launch(Dispatchers.Main) {
-        while (true) {
-            for (iterator in vectorSonidoCartas) {
-                media = MediaPlayer.create(this@MainActivity,vectorSonidoCartas[indice])
-            }
-            media.start()
-            delay(9000)
-        }
-
-    } // fin del RepoAudios
 }// fin de la clase Main

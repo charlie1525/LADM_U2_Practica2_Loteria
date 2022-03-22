@@ -10,7 +10,6 @@ class Carta(actMain: MainActivity,Nombres: Array<String>,Cartas: Array<Int>,Soni
     var pausado = false; var localMain = actMain
     var ejecucion = true; var indiceLocal =0
     var vectoNombres = Nombres; var vectoCartas = Cartas; var vectoSonido = Sonidos
-    lateinit var media: MediaPlayer
 
     override fun run() {
         super.run()
@@ -19,15 +18,14 @@ class Carta(actMain: MainActivity,Nombres: Array<String>,Cartas: Array<Int>,Soni
             if(!pausado){
                 //All the code que ejecutara,aquí
                 localMain.runOnUiThread{
-                    media = MediaPlayer()
-                    localMain.binding.imgCartas.setImageResource(localMain.vectorCartas[indiceLocal])
+                    localMain.binding.imgCartas.setImageResource(vectoCartas[indiceLocal])
                     localMain.binding.txtVTituloCartas.text = vectoNombres[indiceLocal]
-                    localMain.RepoAudios(indiceLocal).start()
+                    localMain.media = MediaPlayer.create(localMain.baseContext,vectoSonido[indiceLocal++])
+                    localMain.media.start()
                 }// modificación de lo visual dentro del MainThread
-                indiceLocal++
                 sleep(9000)
 
-            }// fin del iff
+            }// fin del if
         }// fin del while
     }// fin del metodo RUN
 
@@ -37,5 +35,8 @@ class Carta(actMain: MainActivity,Nombres: Array<String>,Cartas: Array<Int>,Soni
     fun estaPausado(): Boolean {return pausado}
     fun estaEjecutandose():Boolean{return ejecucion}
 
+    fun sincronia(){
+
+    }
 
 }// fin de la clase
