@@ -22,7 +22,7 @@ class Carta(actMain: MainActivity,Nombres: Array<String>,Cartas: Array<Int>,Soni
                     media = MediaPlayer()
                     localMain.binding.imgCartas.setImageResource(localMain.vectorCartas[indiceLocal])
                     localMain.binding.txtVTituloCartas.text = vectoNombres[indiceLocal]
-                    RepoAudios(indiceLocal).start()
+                    localMain.RepoAudios(indiceLocal).start()
                 }// modificación de lo visual dentro del MainThread
                 indiceLocal++
                 sleep(9000)
@@ -30,16 +30,6 @@ class Carta(actMain: MainActivity,Nombres: Array<String>,Cartas: Array<Int>,Soni
             }// fin del iff
         }// fin del while
     }// fin del metodo RUN
-
-    fun RepoAudios(indice:Int) = GlobalScope.launch(Dispatchers.Main) {
-        while(true) {
-            for (iterator in vectoSonido) {
-                media = MediaPlayer.create(localMain.contexto,vectoCartas[indice])
-            }
-            media.start()
-            delay(9000)
-        }
-    }
 
     fun terminarHilo() {ejecucion = false}
     fun pausarHilo() {pausado = true}
