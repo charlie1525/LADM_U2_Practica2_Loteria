@@ -202,5 +202,8 @@ class Barajeo(actMain: MainActivity, indice: MutableList<Int>):Thread() {// fin 
         nombres.removeAt(indice)
     }
 
-    fun terminarHilo() {ejecucion = false}
+    fun terminarBarajeo() {ejecucion = false}
+    fun pausaDespausaBarajeo(){pausado = !pausado}
+    fun estaaEjecutandose():Boolean{return ejecucion}
+    fun estaPausado():Boolean{return !pausado}
 }// fin de la clase

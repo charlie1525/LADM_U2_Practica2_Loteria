@@ -25,16 +25,19 @@
             android:layout_marginRight="16dp"/>
 
         <TextView
+            android:id="@+id/itemTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="default"
-            android:textColor="@color/white"
-            android:id="@+id/itemTitle"
-            android:textStyle="bold"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="33dp"
+            android:layout_marginLeft="33dp"
+            android:layout_marginTop="25dp"
             android:layout_toEndOf="@+id/itemImagen"
             android:layout_toRightOf="@id/itemImagen"
-            android:layout_alignParentTop="true"
-            android:textSize="25sp"/>
+            android:text="default"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:textStyle="bold" />
 
     </RelativeLayout>
 

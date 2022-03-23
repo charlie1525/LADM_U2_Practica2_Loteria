@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     private val scope = GlobalScope.launch(EmptyCoroutineContext,CoroutineStart.LAZY) {
        delay(1000)
         while(true) {
-            mediaCo = MediaPlayer.create(baseContext, R.raw.ascensor2)
+            mediaCo = MediaPlayer.create(baseContext, R.raw.ascensor3)
             mediaCo.start()
             delay(60000)
             mediaCo.stop()
@@ -60,14 +60,18 @@ class MainActivity : AppCompatActivity() {
             scope.cancel()
             Toast.makeText(this, "Mazo barajeado!!", Toast.LENGTH_SHORT).show()
             inicio.visibility = View.VISIBLE
-            buenas.visibility = View.VISIBLE
             mediaCo.stop()
         }
 
         binding.btnInicar.setOnClickListener {
+            if (barajas.estaaEjecutandose() || barajas.estaPausado()){
+                Toast.makeText(this, "Veremos que hacemos", Toast.LENGTH_SHORT).show()
+                barajas.indiceL=0
+            }
             barajas.start()
             binding.imgCartas.setImageResource(R.drawable.esperanding)
             binding.txtVTituloCartas.text = "Esperanding....."
+            buenas.visibility = View.VISIBLE
         } // fin del primer boton, el de inicio
 
         binding.btnBuenas.setOnClickListener {
@@ -75,7 +79,7 @@ class MainActivity : AppCompatActivity() {
             media = MediaPlayer.create(this, R.raw.victorysound)
             media.start()
             restantes.visibility = View.VISIBLE
-            barajas.terminarHilo()
+            barajas.pausaDespausaBarajeo()
         }
 
         binding.btnCartasRstantes.setOnClickListener {
@@ -83,6 +87,7 @@ class MainActivity : AppCompatActivity() {
             adapterMain = CustomAdapater(barajas.vectorNombreCartas,barajas.vectorCartas)
             recycler.layoutManager = LinearLayoutManager(baseContext)
             recycler.adapter = adapterMain
+            barajas.terminarBarajeo()
         }
 
     }// fin del OnCreate
