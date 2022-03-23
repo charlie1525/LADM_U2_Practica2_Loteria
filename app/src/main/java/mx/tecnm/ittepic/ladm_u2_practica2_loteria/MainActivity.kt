@@ -12,8 +12,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     lateinit var cartas: Barajeo
     lateinit var media: MediaPlayer
-    var media: MediaPlayer = MediaPlayer()
-    var media2: MediaPlayer = MediaPlayer()
     lateinit var main: MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
