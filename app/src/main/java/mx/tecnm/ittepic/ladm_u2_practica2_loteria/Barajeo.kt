@@ -1,17 +1,13 @@
 package mx.tecnm.ittepic.ladm_u2_practica2_loteria
 
 import android.media.MediaPlayer
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
-class Barajeo(actMain: MainActivity):Thread() {// fin de la clase
+class Barajeo(actMain: MainActivity, indice: MutableList<Int>):Thread() {// fin de la clase
     var pausado = false; var localMain = actMain
-    var ejecucion = true; var indiceLocal =0
-    lateinit var media: MediaPlayer
+    var ejecucion = true; var arrayIndices = indice
+    var indiceL = 0; lateinit var media: MediaPlayer
 
-    var vectorSonidoCartas = arrayListOf(R.raw.gallo,
+    var vectorSonidoCartas = mutableListOf(R.raw.gallo,
         R.raw.diablo,
         R.raw.dama,
         R.raw.catrin,
@@ -66,8 +62,7 @@ class Barajeo(actMain: MainActivity):Thread() {// fin de la clase
         R.raw.arpa,
         R.raw.rana
     )
-
-    var vectorCartas = arrayListOf(
+    var vectorCartas = mutableListOf(
         R.drawable.gallo1,
         R.drawable.diablo2,
         R.drawable.dama3,
@@ -123,8 +118,7 @@ class Barajeo(actMain: MainActivity):Thread() {// fin de la clase
         R.drawable.arpa53,
         R.drawable.rana54
     )
-
-    var vectorNombreCartas = arrayListOf(
+    var vectorNombreCartas = mutableListOf(
         "El gallo",
         "El diablito",
         "La dama",
@@ -183,38 +177,30 @@ class Barajeo(actMain: MainActivity):Thread() {// fin de la clase
 
     override fun run() {
         super.run()
-
         while(ejecucion){
             if(!pausado){
                 //All the code que ejecutara,aquí
                 localMain.runOnUiThread{
-                    media = MediaPlayer()
-                    localMain.binding.imgCartas.setImageResource(vectorCartas[indiceLocal])
-                    localMain.binding.txtVTituloCartas.text = vectorNombreCartas[indiceLocal]
-                    RepoAudios(indiceLocal).start()
-                }// modificación de lo visual dentro del MainThread
-                indiceLocal++
-                sleep(9000)
+                    media = MediaPlayer.create(localMain.baseContext,vectorSonidoCartas[arrayIndices[indiceL]])
+                    localMain.binding.imgCartas.setImageResource(vectorCartas[arrayIndices[indiceL]])
+                    localMain.binding.txtVTituloCartas.text = vectorNombreCartas[arrayIndices[indiceL]]
+                    dropearElementos(vectorSonidoCartas,vectorCartas,vectorNombreCartas,arrayIndices[indiceL])
+                    indiceL++
+                    media.start()
 
-            }// fin del iff
+                }// modificación de lo visual dentro del MainThread
+                sleep(9000)
+                media.stop()
+
+            }// fin del if
         }// fin del while
     }// fin del metodo RUN
 
+    fun dropearElementos(sonidos: MutableList<Int>,cartas: MutableList<Int>, nombres: MutableList<String>,indice: Int){
+        sonidos.removeAt(indice)
+        cartas.removeAt(indice)
+        nombres.removeAt(indice)
+    }
+
     fun terminarHilo() {ejecucion = false}
-    fun pausarHilo() {pausado = true}
-    fun despausarHilo() {pausado = false}
-    fun estaPausado(): Boolean {return pausado}
-    fun estaEjecutandose():Boolean{return ejecucion}
-
-    fun RepoAudios(indice: Int) = GlobalScope.launch(Dispatchers.Main) {
-        while (true) {
-            for (iterator in vectorSonidoCartas) {
-                media = MediaPlayer.create(localMain.baseContext,vectorSonidoCartas[indice])
-            }
-            media.start()
-            delay(9000)
-        }
-    } // fin del RepoAudios
-
-
 }// fin de la clase
