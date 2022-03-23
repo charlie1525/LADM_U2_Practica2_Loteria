@@ -12,6 +12,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     lateinit var cartas: Barajeo
     lateinit var media: MediaPlayer
+    var media: MediaPlayer = MediaPlayer()
+    var media2: MediaPlayer = MediaPlayer()
     lateinit var main: MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,25 +28,14 @@ class MainActivity : AppCompatActivity() {
         //Sección de los botones
 
         binding.btnBarajear.setOnClickListener {
-            //shuffled()
+            //shuffled(Random(Random.nextInt()))
             Toast.makeText(this, "Mazo barajeado!!", Toast.LENGTH_SHORT).show()
         }
 
         binding.btnInicar.setOnClickListener {
             cartas.start()
-            when (cartas.indiceLocal) {
-                54 -> {
-                    cartas.terminarHilo()
-                    Toast.makeText(
-                        this,
-                        "Se acabaron las cartas, vuelve a iniciar el juego",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    binding.imgCartas.setImageResource(R.drawable.esperanding)
-                    binding.txtVTituloCartas.text = "Esperanding....."
-                    cartas.indiceLocal = 0
-                }
-            }// fin del when del indice
+            binding.imgCartas.setImageResource(R.drawable.esperanding)
+            binding.txtVTituloCartas.text = "Esperanding....."
         } // fin del primer boton, el de inicio
 
         binding.btnBuenas.setOnClickListener {
