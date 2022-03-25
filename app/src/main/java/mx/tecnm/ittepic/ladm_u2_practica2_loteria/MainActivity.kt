@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     lateinit var barajas: Barajeo
     lateinit var media: MediaPlayer
-    var vectorBarajeo = mutableListOf(1,2,3,4,5,6,7,8,9,10
+    var vectorBarajeo = arrayListOf(1,2,3,4,5,6,7,8,9,10
         ,11,12,13,14,15,16,17,18,19,20
         ,21,22,23,24,25,26,27,28,29,30
         ,31,32,33,34,35,36,37,38,39,40
@@ -24,14 +24,23 @@ class MainActivity : AppCompatActivity() {
     lateinit var recycler: RecyclerView
     lateinit var adapterMain:CustomAdapater
     lateinit var mediaCo: MediaPlayer
+    var mediaBack: MediaPlayer ?= MediaPlayer()
 
     private val scope = GlobalScope.launch(EmptyCoroutineContext,CoroutineStart.LAZY) {
-       delay(1000)
+       delay(500)
         while(true) {
             mediaCo = MediaPlayer.create(baseContext, R.raw.ascensor3)
             mediaCo.start()
-            delay(60000)
+            delay(120000)
             mediaCo.stop()
+        }
+    }
+    private val musicScope = GlobalScope.launch(EmptyCoroutineContext,CoroutineStart.LAZY) {
+        while(true){
+            mediaBack = MediaPlayer.create(baseContext,R.raw.fondopiano)
+            mediaBack!!.start()
+            delay(175000)
+            mediaBack!!.stop()
         }
     }
 
@@ -61,11 +70,12 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Mazo barajeado!!", Toast.LENGTH_SHORT).show()
             inicio.visibility = View.VISIBLE
             mediaCo.stop()
+            musicScope.start()
         }
 
         binding.btnInicar.setOnClickListener {
-            if (barajas.estaaEjecutandose() || barajas.estaPausado()){
-                Toast.makeText(this, "Veremos que hacemos", Toast.LENGTH_SHORT).show()
+            if (!barajas.estaEjecutandose()){
+                //Toast.makeText(this, "Veremos que hacemos", Toast.LENGTH_SHORT).show()
                 barajas.indiceL=0
             }
             barajas.start()
@@ -83,11 +93,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnCartasRstantes.setOnClickListener {
-            recycler= findViewById<RecyclerView>(R.id.recyclerViewXML)
+            recycler= findViewById(R.id.recyclerViewXML)
             adapterMain = CustomAdapater(barajas.vectorNombreCartas,barajas.vectorCartas)
             recycler.layoutManager = LinearLayoutManager(baseContext)
             recycler.adapter = adapterMain
             barajas.terminarBarajeo()
+            musicScope.cancel()
+            mediaBack!!.stop()
         }
 
     }// fin del OnCreate

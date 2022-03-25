@@ -1,13 +1,18 @@
 package mx.tecnm.ittepic.ladm_u2_practica2_loteria
 
 import android.media.MediaPlayer
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.coroutines.EmptyCoroutineContext
 
 class Barajeo(actMain: MainActivity, indice: MutableList<Int>):Thread() {// fin de la clase
     var pausado = false; var localMain = actMain
     var ejecucion = true; var arrayIndices = indice
     var indiceL = 0; lateinit var media: MediaPlayer
 
-    var vectorSonidoCartas = mutableListOf(R.raw.gallo,
+    private var vectorSonidoCartas = arrayListOf(R.raw.gallo,
         R.raw.diablo,
         R.raw.dama,
         R.raw.catrin,
@@ -62,7 +67,7 @@ class Barajeo(actMain: MainActivity, indice: MutableList<Int>):Thread() {// fin 
         R.raw.arpa,
         R.raw.rana
     )
-    var vectorCartas = mutableListOf(
+    var vectorCartas = arrayListOf(
         R.drawable.gallo1,
         R.drawable.diablo2,
         R.drawable.dama3,
@@ -118,7 +123,7 @@ class Barajeo(actMain: MainActivity, indice: MutableList<Int>):Thread() {// fin 
         R.drawable.arpa53,
         R.drawable.rana54
     )
-    var vectorNombreCartas = mutableListOf(
+    var vectorNombreCartas = arrayListOf(
         "El gallo",
         "El diablito",
         "La dama",
@@ -175,11 +180,12 @@ class Barajeo(actMain: MainActivity, indice: MutableList<Int>):Thread() {// fin 
         "La rana"
     )
 
+
     override fun run() {
         super.run()
         while(ejecucion){
             if(!pausado){
-                //All the code que ejecutara,aquí
+                //All the code que ejecutara,aqui
                 localMain.runOnUiThread{
                     media = MediaPlayer.create(localMain.baseContext,vectorSonidoCartas[arrayIndices[indiceL]])
                     localMain.binding.imgCartas.setImageResource(vectorCartas[arrayIndices[indiceL]])
@@ -196,7 +202,7 @@ class Barajeo(actMain: MainActivity, indice: MutableList<Int>):Thread() {// fin 
         }// fin del while
     }// fin del metodo RUN
 
-    fun dropearElementos(sonidos: MutableList<Int>,cartas: MutableList<Int>, nombres: MutableList<String>,indice: Int){
+    fun dropearElementos(sonidos: ArrayList<Int>,cartas: ArrayList<Int>, nombres: ArrayList<String>,indice: Int){
         sonidos.removeAt(indice)
         cartas.removeAt(indice)
         nombres.removeAt(indice)
@@ -204,6 +210,6 @@ class Barajeo(actMain: MainActivity, indice: MutableList<Int>):Thread() {// fin 
 
     fun terminarBarajeo() {ejecucion = false}
     fun pausaDespausaBarajeo(){pausado = !pausado}
-    fun estaaEjecutandose():Boolean{return ejecucion}
+    fun estaEjecutandose():Boolean{return ejecucion}
     fun estaPausado():Boolean{return !pausado}
 }// fin de la clase
