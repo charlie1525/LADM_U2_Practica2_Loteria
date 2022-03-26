@@ -10,7 +10,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 class Barajeo(actMain: MainActivity, indice: ArrayList<Int>):Thread() {// fin de la clase
     var pausado = false; var localMain = actMain
     var ejecucion = true; var arrayIndices = indice
-    var indiceL = 0; lateinit var media: MediaPlayer
+    lateinit var media: MediaPlayer
 
     private var vectorSonidoCartas = arrayListOf(R.raw.gallo,
         R.raw.diablo,
@@ -187,10 +187,10 @@ class Barajeo(actMain: MainActivity, indice: ArrayList<Int>):Thread() {// fin de
             if(!pausado){
                 //All the code que ejecutara,aqui
                 localMain.runOnUiThread{
-                    media = MediaPlayer.create(localMain.baseContext,vectorSonidoCartas[arrayIndices[indiceL]])
-                    localMain.binding.imgCartas.setImageResource(vectorCartas[arrayIndices[indiceL]])
-                    localMain.binding.txtVTituloCartas.text = vectorNombreCartas[arrayIndices[indiceL]]
-                    dropearElementos(vectorSonidoCartas,vectorCartas,vectorNombreCartas,arrayIndices[indiceL])
+                    media = MediaPlayer.create(localMain.baseContext,vectorSonidoCartas[arrayIndices[0]])
+                    localMain.binding.imgCartas.setImageResource(vectorCartas[arrayIndices[0]])
+                    localMain.binding.txtVTituloCartas.text = vectorNombreCartas[arrayIndices[0]]
+                    dropearElementos(vectorSonidoCartas,vectorCartas,vectorNombreCartas,arrayIndices[0])
                     media.start()
                     //indiceL++
 
@@ -208,8 +208,22 @@ class Barajeo(actMain: MainActivity, indice: ArrayList<Int>):Thread() {// fin de
         nombres.removeAt(indice)
     }
 
-    fun terminarBarajeo() {ejecucion = false}
-    fun pausaDespausaBarajeo(){pausado = !pausado}
-    fun estaEjecutandose():Boolean{return ejecucion}
-    fun estaPausado():Boolean{return !pausado}
+    fun terminarBarajeo() {
+        ejecucion = false
+    }
+    fun pausaBarajeo(){
+        pausado = true
+        media.stop()
+    }
+
+    fun despausaBarajeo(){
+        pausado = false
+        media.start()
+    }
+    fun estaEjecutandose():Boolean{
+        return ejecucion
+    }
+    fun estaPausado():Boolean{
+        return pausado
+    }
 }// fin de la clase

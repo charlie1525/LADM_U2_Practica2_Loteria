@@ -14,7 +14,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     lateinit var barajas: Barajeo
-    lateinit var media: MediaPlayer
+    lateinit var mediaVic: MediaPlayer
     var vectorBarajeo = arrayListOf(1,2,3,4,5,6,7,8,9,10
         ,11,12,13,14,15,16,17,18,19,20
         ,21,22,23,24,25,26,27,28,29,30
@@ -44,6 +44,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val victorySound = GlobalScope.launch(EmptyCoroutineContext,CoroutineStart.LAZY) {
+        mediaVic = MediaPlayer.create(baseContext, R.raw.victorysound)
+        mediaVic.start()
+        delay(7000)
+        mediaVic.release()
+    }
+
+    private val cardView = GlobalScope.launch(EmptyCoroutineContext,CoroutineStart.LAZY){
+        runOnUiThread{
+            recycler = findViewById(R.id.recyclerViewXML)
+            adapterMain = CustomAdapater(barajas.vectorNombreCartas, barajas.vectorCartas)
+            recycler.layoutManager = LinearLayoutManager(baseContext)
+            recycler.adapter = adapterMain
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -57,6 +73,9 @@ class MainActivity : AppCompatActivity() {
 
         var inicio = binding.btnInicar
         inicio.visibility = View.INVISIBLE
+
+        var btnbarajas = binding.btnBarajear
+
 
         barajas = Barajeo(this,vectorBarajeo)
         binding.imgCartas.setImageResource(R.drawable.esperanding)
@@ -74,10 +93,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnInicar.setOnClickListener {
-            if (!barajas.estaEjecutandose()){
-                //Toast.makeText(this, "Veremos que hacemos", Toast.LENGTH_SHORT).show()
-                barajas.indiceL=0
-            }
             barajas.start()
             binding.imgCartas.setImageResource(R.drawable.esperanding)
             binding.txtVTituloCartas.text = "Esperanding....."
@@ -85,24 +100,29 @@ class MainActivity : AppCompatActivity() {
         } // fin del primer boton, el de inicio
 
         binding.btnBuenas.setOnClickListener {
-            if (barajas.media.isPlaying){barajas.media.pause()}
-            if (barajas.estaPausado()){barajas.pausaDespausaBarajeo(); return@setOnClickListener}
-            media = MediaPlayer.create(this, R.raw.victorysound)
-            media.start()
+            if(barajas.estaPausado()){
+                barajas.despausaBarajeo()
+                Toast.makeText(this, "Espera a que se termine de decir la carta", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            barajas.pausaBarajeo()
             restantes.visibility = View.VISIBLE
-            binding.btnBarajear.visibility = View.INVISIBLE
+            btnbarajas.visibility = View.INVISIBLE
             inicio.visibility = View.INVISIBLE
-            barajas.pausaDespausaBarajeo()
-        }
+            victorySound.start()
+            if (victorySound.isCompleted){victorySound.cancel()}
+            Toast.makeText(this, "Presiona de nuevo para despausar", Toast.LENGTH_SHORT).show()
+        }// fin del set on click para buenas
 
         binding.btnCartasRstantes.setOnClickListener {
-            recycler= findViewById(R.id.recyclerViewXML)
-            adapterMain = CustomAdapater(barajas.vectorNombreCartas,barajas.vectorCartas)
-            recycler.layoutManager = LinearLayoutManager(baseContext)
-            recycler.adapter = adapterMain
-            barajas.terminarBarajeo()
-            musicScope.cancel()
-            mediaBack!!.release()
+            if(barajas.estaEjecutandose()){
+                cardView.start()
+                musicScope.cancel()
+                mediaBack!!.release()
+                barajas.terminarBarajeo()
+            }
+            Toast.makeText(this, "Juego terminado", Toast.LENGTH_SHORT).show()
+            return@setOnClickListener
         }
 
     }// fin del OnCreate
