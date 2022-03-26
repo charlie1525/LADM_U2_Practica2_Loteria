@@ -7,7 +7,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.EmptyCoroutineContext
 
-class Barajeo(actMain: MainActivity, indice: MutableList<Int>):Thread() {// fin de la clase
+class Barajeo(actMain: MainActivity, indice: ArrayList<Int>):Thread() {// fin de la clase
     var pausado = false; var localMain = actMain
     var ejecucion = true; var arrayIndices = indice
     var indiceL = 0; lateinit var media: MediaPlayer
@@ -191,12 +191,12 @@ class Barajeo(actMain: MainActivity, indice: MutableList<Int>):Thread() {// fin 
                     localMain.binding.imgCartas.setImageResource(vectorCartas[arrayIndices[indiceL]])
                     localMain.binding.txtVTituloCartas.text = vectorNombreCartas[arrayIndices[indiceL]]
                     dropearElementos(vectorSonidoCartas,vectorCartas,vectorNombreCartas,arrayIndices[indiceL])
-                    indiceL++
                     media.start()
+                    //indiceL++
 
                 }// modificación de lo visual dentro del MainThread
                 sleep(9000)
-                media.stop()
+                media.release()
 
             }// fin del if
         }// fin del while

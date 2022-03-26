@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
             scope.cancel()
             Toast.makeText(this, "Mazo barajeado!!", Toast.LENGTH_SHORT).show()
             inicio.visibility = View.VISIBLE
-            mediaCo.stop()
+            mediaCo.release()
             musicScope.start()
         }
 
@@ -85,10 +85,13 @@ class MainActivity : AppCompatActivity() {
         } // fin del primer boton, el de inicio
 
         binding.btnBuenas.setOnClickListener {
-            if (barajas.media.isPlaying){barajas.media.stop()}
+            if (barajas.media.isPlaying){barajas.media.pause()}
+            if (barajas.estaPausado()){barajas.pausaDespausaBarajeo(); return@setOnClickListener}
             media = MediaPlayer.create(this, R.raw.victorysound)
             media.start()
             restantes.visibility = View.VISIBLE
+            binding.btnBarajear.visibility = View.INVISIBLE
+            inicio.visibility = View.INVISIBLE
             barajas.pausaDespausaBarajeo()
         }
 
@@ -99,7 +102,7 @@ class MainActivity : AppCompatActivity() {
             recycler.adapter = adapterMain
             barajas.terminarBarajeo()
             musicScope.cancel()
-            mediaBack!!.stop()
+            mediaBack!!.release()
         }
 
     }// fin del OnCreate
